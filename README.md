@@ -13,7 +13,7 @@ Each environment (Dev and Local) consists of 112 data points per service. The me
 ## Key Findings
 
 ### 1. GPT-4o Standard Chat Response Times
-![](figures\gpt4o_times.png)
+![](figures/gpt4o_times.png)
 
 
 - **Dev Environment:**
@@ -41,7 +41,7 @@ The 95% confidence intervals for the mean response times **do not overlap**, con
 
 ### 2. Azure Search Vector Store Response Times
 
-![](figures\azure_search_times.png)
+![](figures/azure_search_times.png)
 
 - **Dev Environment:**
   - Mean: 7.03 seconds
