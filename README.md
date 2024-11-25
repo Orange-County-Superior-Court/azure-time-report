@@ -77,4 +77,21 @@ The data indicates a significant performance discrepancy between the Dev Environ
 Given these findings, it is clear that the Dev Environment is slower, and performance could be impacted by factors such as network latency or resource contention in the Dev Environment. Further investigation into the Dev Environment's configuration, and network conditions may help identify specific bottlenecks and areas for improvement.
 
 
-## Possible Explanations
+## Current Infrastructure Configuration
+The observed performance differences between the Dev and Local Environments can be partially attributed to the architecture and configuration of the Dev Environment:
+
+1. **Docker Containerization**:  
+   The Dev Environment runs the API within a Docker container (`python:3.10-slim`). Containerization introduces an additional layer of abstraction, which can add overhead in terms of resource usage, particularly when running in a cloud environment. This may lead to slower processing times compared to the Local Environment, where resources are used directly.
+
+2. **Cloud Deployment (Azure Web App)**:  
+   The Dev Environment is deployed on an Azure Web App in Arizona. The physical location of the web app in Arizona may add network latency if the client is located far from this region. 
+   ![](figures/web-app-rg.png)
+
+3. **Python & FastAPI Performance**:  
+    Our backend uses Python 3.10 and FastAPI, both of which are performant technologies for building APIs. However, when running inside a Docker container, additional resource constraints might impact overall performance. 
+
+4. **Azure Search Plan**:
+    ![](figures/azure-search-rg.png)
+
+5. **OpenAI Plan**:
+   ![](figures/openai-rg.png)
