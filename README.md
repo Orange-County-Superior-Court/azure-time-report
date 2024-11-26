@@ -65,6 +65,26 @@ Similarly to GPT-4, Azure Search in the Dev Environment shows a significantly hi
 
 The 95% confidence intervals for the mean response times **do not overlap**, indicating that the Dev Environment is statistically slower than the Local Environment for Azure Search as well.
 
+## Testing Docker Configuration Locally
+The Dev Environment runs the API within a Docker container (`python:3.10-slim`). Containerization could introduce an additional layer of abstraction, which can add overhead in terms of resource usage, particularly when running in a cloud environment. This may lead to slower processing times compared to the Local Environment, where resources are used directly.
+
+However, as part of our investigation into the performance issues, we tested the Azure services in a local Docker container to isolate whether Docker itself was contributing to the slowdown observed in the Dev Environment. By running the same Docker image locally, we aimed to rule out the possibility that Docker containerization was the cause of the performance discrepancy. However, the results below show that the endpoint response times remained fast locally, even within the Docker container. This indicates that Docker is not a contributing factor to the slower performance in the Dev Environment, and this has given us enough reason and evidence to exclude  containerization as the root cause of the issue.
+
+![](figures/local_docker_azure_search_times.png)
+![](figures/local_docker_gpt-4os.png)
+
+- **GPT-4o:**
+  - Mean: 0.62 seconds
+  - Standard Deviation: 0.42 seconds
+  - Variance: 0.18
+  - Median: 0.52 seconds
+
+- **Azure Search:**
+  - Mean: 0.84 seconds
+  - Standard Deviation: 0.18 seconds
+  - Variance: 0.04
+  - Median: 0.81 seconds
+
 ## Conclusion
 
 The data indicates a significant performance discrepancy between the Dev Environment and the Local Environment, with both services (GPT-4 standard chat and Azure Search Vector Store) showing much slower response times in the Dev Environment compared to the Local Environment. The following points summarize the key conclusions:
@@ -80,18 +100,15 @@ Given these findings, it is clear that the Dev Environment is slower, and perfor
 ## Current Infrastructure Configuration
 The observed performance differences between the Dev and Local Environments can be partially attributed to the architecture and configuration of the Dev Environment:
 
-1. **Docker Containerization**:  
-   The Dev Environment runs the API within a Docker container (`python:3.10-slim`). Containerization introduces an additional layer of abstraction, which can add overhead in terms of resource usage, particularly when running in a cloud environment. This may lead to slower processing times compared to the Local Environment, where resources are used directly.
-
-2. **Cloud Deployment (Azure Web App)**:  
+1. **Cloud Deployment (Azure Web App)**:  
    The Dev Environment is deployed on an Azure Web App in Arizona. The physical location of the web app in Arizona may add network latency if the client is located far from this region. 
    ![](figures/web-app-rg.png)
 
-3. **Python & FastAPI Performance**:  
+2. **Python & FastAPI Performance**:  
     Our backend uses Python 3.10 and FastAPI, both of which are performant technologies for building APIs. However, when running inside a Docker container, additional resource constraints might impact overall performance. 
 
-4. **Azure Search Plan**:
+3. **Azure Search Plan**:
     ![](figures/azure-search-rg.png)
 
-5. **OpenAI Plan**:
+4. **OpenAI Plan**:
    ![](figures/openai-rg.png)
